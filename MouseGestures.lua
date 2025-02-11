@@ -1,177 +1,155 @@
 --[[
-Author: Mark van den Berg
-Version: 0.8
-Date: 01-05-2020
-
-Special credits to https://github.com/wookiefriseur for showing a way to do this for windows gestures which inspired this script
+편저자: Gomdolius
+제작일: 2025. 2. 11.
+Mark van den Berg의 https://github.com/mark-vandenberg/g-hub-mouse-gestures 에 기초함
+* Special credits to https://github.com/wookiefriseur for showing a way to do this for windows gestures which inspired this script
 For some windows gestures check https://github.com/wookiefriseur/LogitechMouseGestures
-
-This script wil let you use a button on your mouse to act like the "Gesture button" from Logitech Options.
-It will also let you use another button on your mouse for navigating between browser pages using gestures.
-
-The default settings below will be for the multytasking gestures from macOS
- - Up 		Mission Control 	(Control+Up-Arrow)
- - Down 	Application Windows (Control+Down-Arrow)
- - Left 	move right a space 	(Control+Right-Arrow)
- - Right 	move left a space 	(Control+Left-Arrow)
-
-The default settings below will be for the navigation gestures for in browsers
- - Up 		{ no action }
- - Down 	{ no action }
- - Left 	next page 		(Command+Right-Bracket)
- - Right 	previous page 	(Command+Left-Bracket)
 ]]--
 
  
--- The button your gestures are mapped to G1 = 1, G2 = 2 etc..
-gestureButtonNumber = 4;
+-- 제스처를 매핑할 버튼 / G1 = 1, G2 = 2 etc..
+gestureButtonNumber = 5;
 
--- The button navigation actions are mapped to G1 = 1, G2 = 2 etc..
-navigationButtonNumber = 5;
+-- 최소 이동 거리
+minimalHorizontalMovement = 2500;
+minimalVerticalMovement = 2500;
 
--- The minimal horizontal/vertical distance your mouse needs to be moved for the gesture to recognize in pixels
-minimalHorizontalMovement = 200;
-minimalVerticalMovement = 200;
+-- 클릭으로 간주할 이동 거리
+noMovementThreshold = 750
 
--- Default values for 
+-- 키 누름 기본 간격 (ms)
+delay = 20
+
+-- 디버깅 메시지 표시 여부 (콘솔)
+debuggingEnabled = true
+
+
+-- 이벤트 감지
+
 horizontalStartingPosistion = 0;
 verticalStartingPosistion = 0;
 horizontalEndingPosistion = 0;
 verticalEndingPosistion = 0;
 
--- Delay between keypresses in millies
-delay = 20
-
--- Here you can enable/disable features of the script
-missionControlEnabled = true
-applicationWindowsEnabled = true
-moveBetweenSpacesEnabled = true
-browserNavigationEnabled = true
-
--- Toggles debugging messages
-debuggingEnabeld = false
-
--- Event detection
 function OnEvent(event, arg, family)
-	if event == "MOUSE_BUTTON_PRESSED" and (arg == gestureButtonNumber or arg == navigationButtonNumber) then
-		if debuggingEnabeld then OutputLogMessage("\nEvent: " .. event .. " for button: " .. arg .. "\n") end
+	if event == "MOUSE_BUTTON_PRESSED" and arg == gestureButtonNumber then
+		if debuggingEnabled then OutputLogMessage("\nEvent: " .. event .. " for button: " .. arg .. "\n") end
 		
-		-- Get stating mouse posistion
+		-- 시작점 산출
 		horizontalStartingPosistion, verticalStartingPosistion = GetMousePosition()
 		
-		if debuggingEnabeld then 
+		if debuggingEnabled then 
 			OutputLogMessage("Horizontal starting posistion: " .. horizontalStartingPosistion .. "\n") 
 			OutputLogMessage("Vertical starting posistion: " .. verticalStartingPosistion .. "\n") 
 		end
 	end
 
-	if event == "MOUSE_BUTTON_RELEASED" and (arg == gestureButtonNumber or arg == navigationButtonNumber) then
-		if debuggingEnabeld then OutputLogMessage("\nEvent: " .. event .. " for button: " .. arg .. "\n") end
+	if event == "MOUSE_BUTTON_RELEASED" and arg == gestureButtonNumber then
+		if debuggingEnabled then OutputLogMessage("\nEvent: " .. event .. " for button: " .. arg .. "\n") end
 		
-		-- Get ending mouse posistion
+		-- 끝점 산출
 		horizontalEndingPosistion, verticalEndingPosistion = GetMousePosition()
 		
-		if debuggingEnabeld then 
+		if debuggingEnabled then 
 			OutputLogMessage("Horizontal ending posistion: " .. horizontalEndingPosistion .. "\n") 
 			OutputLogMessage("Vertical ending posistion: " .. verticalEndingPosistion .. "\n") 
 		end
 
-		-- Calculate differences between start and end posistions
+		-- 시작지점과 끝점 간 거리 산출
 		horizontalDifference = horizontalStartingPosistion - horizontalEndingPosistion
 		verticalDifference = verticalStartingPosistion - verticalEndingPosistion
+		abshorizontalDifference = math.abs(horizontalDifference)
+		absverticalDifference = math.abs(verticalDifference)
 
-		-- Determine the direction of the mouse and if the mouse moved far enough
+		-- 움직인 방향과 거리를 결정
 		if horizontalDifference > minimalHorizontalMovement then mouseMovedLeft(arg) end
 		if horizontalDifference < -minimalHorizontalMovement then mouseMovedRight(arg) end
-		if verticalDifference > minimalVerticalMovement then mouseMovedDown(arg) end
-		if verticalDifference < -minimalVerticalMovement then mouseMovedUp(arg) end
+		if verticalDifference > minimalVerticalMovement then mouseMovedUp(arg) end
+		if verticalDifference < -minimalVerticalMovement then mouseMovedDown(arg) end
+		if abshorizontalDifference < noMovementThreshold and absverticalDifference < noMovementThreshold then mouseClicked(arg) end
 	end
 end
 
--- Mouese Moved
+-- 마우스 이동
 function mouseMovedUp(buttonNumber)
-	if debuggingEnabeld then OutputLogMessage("mouseMovedUp\n") end
+	if debuggingEnabled then OutputLogMessage("\nmouseMovedUp\n") end
 	
-	if buttonNumber == gestureButtonNumber and missionControlEnabled then 
-		performMissionControlGesture()
+	if buttonNumber == gestureButtonNumber then 
+		performUpGesture()
 	end
 end
 
 function mouseMovedDown(buttonNumber)
-	if debuggingEnabeld then OutputLogMessage("mouseMovedDown\n") end
+	if debuggingEnabled then OutputLogMessage("\nmouseMovedDown\n") end
 	
-	if buttonNumber == gestureButtonNumber and applicationWindowsEnabled then 
-		performApplicationWindowsGesture()
-	end
-end
-
-function mouseMovedLeft(buttonNumber)
-	if debuggingEnabeld then OutputLogMessage("mouseMovedLeft\n") end
-	
-	if buttonNumber == gestureButtonNumber and moveBetweenSpacesEnabled then 
-		performSwipeLeftGesture()
-	end
-	if buttonNumber == navigationButtonNumber and browserNavigationEnabled then 
-		performNextPageGesture()
+	if buttonNumber == gestureButtonNumber then 
+		performDownGesture()
 	end
 end
 
 function mouseMovedRight(buttonNumber)
-	if debuggingEnabeld then OutputLogMessage("mouseMovedRight\n") end
+	if debuggingEnabled then OutputLogMessage("\nmouseMovedRight\n") end
 	
-	if buttonNumber == gestureButtonNumber and moveBetweenSpacesEnabled then 
-		performSwipeRightGesture()
-	end
-	if buttonNumber == navigationButtonNumber and browserNavigationEnabled then 
-		performPreviousPageGesture()
+	if buttonNumber == gestureButtonNumber then 
+		performRightGesture()
 	end
 end
 
--- Gesture Functions
-function performMissionControlGesture()
-	if debuggingEnabeld then OutputLogMessage("performMissionControlGesture\n") end
-	firstKey = "lctrl"
-	secondKey = "up"
-	pressTwoKeys(firstKey, secondKey)
+function mouseMovedLeft(buttonNumber)
+	if debuggingEnabled then OutputLogMessage("\nmouseMovedLeft\n") end
+	
+	if buttonNumber == gestureButtonNumber then 
+		performLeftGesture()
+	end
 end
 
-function performApplicationWindowsGesture()
-	if debuggingEnabeld then OutputLogMessage("performApplicationWindowsGesture\n") end
-	firstKey = "lctrl"
-	secondKey = "down"
-	pressTwoKeys(firstKey, secondKey)
+-- 마우스 클릭
+function mouseClicked(buttonNumber)
+	if debuggingEnabled then OutputLogMessage("\nmouseClicked\n") end
+	
+	if buttonNumber == gestureButtonNumber then 
+		performClickGesture()
+	end
 end
 
-function performSwipeLeftGesture()
-	if debuggingEnabeld then OutputLogMessage("performSwipeLeftGesture\n") end
-	firstKey = "lctrl"
-	secondKey = "right"
-	pressTwoKeys(firstKey, secondKey)
+-- 제스처 및 클릭 동작
+function performUpGesture()
+	if debuggingEnabled then OutputLogMessage("performUpGesture\n") end
+	firstKey = "f5"
+	pressOneKey(firstKey)
 end
 
-function performSwipeRightGesture()
-	if debuggingEnabeld then OutputLogMessage("performSwipeRightGesture\n") end
-	firstKey = "lctrl"
-	secondKey = "left"
-	pressTwoKeys(firstKey, secondKey)
+function performLeftGesture()
+	if debuggingEnabled then OutputLogMessage("performLeftGesture\n") end
+	firstKey = "f6"
+	pressOneKey(firstKey)
 end
 
--- Browser Navigation Functions
-function performNextPageGesture()
-	if debuggingEnabeld then OutputLogMessage("performNextPageGesture\n") end
-	firstKey = "lgui"
-	secondKey = "rbracket"
-	pressTwoKeys(firstKey, secondKey)
+function performRightGesture()
+	if debuggingEnabled then OutputLogMessage("performRightGesture\n") end
+	firstKey = "f7"
+	pressOneKey(firstKey)
 end
 
-function performPreviousPageGesture()
-	if debuggingEnabeld then OutputLogMessage("performPreviousPageGesture\n") end
-	firstKey = "lgui"
-	secondKey = "lbracket"
-	pressTwoKeys(firstKey, secondKey)
+function performDownGesture()
+	if debuggingEnabled then OutputLogMessage("performDownGesture\n") end
+	firstKey = "f8"
+	pressOneKey(firstKey)
 end
 
--- Helper Functions
+function performClickGesture()
+	if debuggingEnabled then OutputLogMessage("performClickGesture\n") end
+	firstKey = "f1"
+	pressOneKey(firstKey)
+end
+
+-- 보조 함수
+function pressOneKey(firstKey)
+	PressKey(firstKey)
+	Sleep(delay)
+	ReleaseKey(firstKey)
+end
+
 function pressTwoKeys(firstKey, secondKey)
 	PressKey(firstKey)
 	Sleep(delay)
@@ -181,3 +159,14 @@ function pressTwoKeys(firstKey, secondKey)
 	ReleaseKey(secondKey)
 end
 
+function pressThreeKeys(firstKey, secondKey, thirdKey)
+	PressKey(firstKey)
+	Sleep(delay)
+	PressKey(secondKey)
+	Sleep(delay)
+	PressKey(thirdKey)
+	Sleep(delay)
+	ReleaseKey(firstKey)
+	ReleaseKey(secondKey)
+	ReleaseKey(thirdKey)
+end
