@@ -1,39 +1,17 @@
-# G-HUB Mouse Gestures
-Lua script to use mouse gestures in macOS using g-hub
+# 개요
+Windows 환경에서 Logitech G HUB를 사용하여 원래는 사용하지 못하는 마우스 제스처 기능을 구현하는 Lua 스크립트
+FINAL FANTASY XIV에서 5~8번 파티원을 빠르게 선택하기 위하여 https://github.com/mark-vandenberg/g-hub-mouse-gestures 에 기반하여 작성하였음
 
-## Installation:
-In G-HUB select the profile you want to use these gestures in. Click on "scripting". Click on "create a new lua script". (optional) Give the script a name and description. Click on "edit script". Copy the code from this script and paste it in the script editor that just opened. Click "script>save" or press Command+S to save the script. The script should now be working :)
+## 설치
+프로파일 관리 화면에서 프로파일 하단의 스크립팅 버튼을 누르고 새로운 스크립트를 등록하여 스크립트 내용을 그대로 전재, 삽입 후 저장
 
 ## How to use:
-You perform the gestures by pressing the designated button, moving the mouse in the direction of the funtion that you want to use and then releasing the button.
+지정된 버튼을 누르며 상, 하, 좌, 우로 드래그한 후 놓으면 스크립트에서 지정된 키입력이 작동
 
 ## Gestures for button 4:
-Direction | Function  | Buttons | Default
----- | ------- | ----------- | -------
-Up | Mission Control | Control+Up-Arrow | Enabled
-Down | Application Windows | Control+Down-Arrow | Enabled
-Left | Move right a Space | Control+Right-Arrow | Enabled
-Right | Move left a Space | Control+Left-Arrow | Enabled
-
-## Gestures for button 5:
-Direction | Function  | Buttons | Default
----- | ------- | ----------- | -------
-Up | none | n/a | n/a
-Down | none | n/a | n/a
-Left | Next page | Command+Right-Bracket | Enabled
-Right | Previous page | Command+Left-Bracket | Enabled
-
-## Editing the script
-If you want to map the gestures to another button assign another button number to gestureButtonNumber
-The same goes for browser navigation, in that case assign another button number to navigationButtonNumber
-
-If you want the gesture to happen with more of less movement of your mouse change the value of minimalHorizontalMovement and/or minimalVerticalMovement.
-
-If you want to disable some of the features change the value of missionControlEnabled/ applicationWindowsEnabled/ moveBetweenSpacesEnabled/ browserNavigationEnabled to false
-
-If you want to switch functions just switch the function calls around, it's pretty modular.
-If you want to add functions (for example to the two open spots) create a new function, add the keys that bind to the action you want to perform. Call the function from the prefferd "mouseMoved..." function for the preferred buttonNumber.
-
-If you have trouble with understanding what calls get made in what order you can set debuggingEnabeld to true. This will display messages in the console of the editor about what is happening.
-
-If you have trouble with for example finding the names of buttons then in the editor click "Help>Scripting API". This will show you the documentation of scripting with the g-series lua api.
+Direction | Function  | Buttons
+---- | ------- | -----------
+상 | 5번 파티원 선택 | F5
+하 | 8번 파티원 선택 | F8
+좌 | 6번 파티원 선택 | F6
+우 | 7번 파티원 선택 | F7
