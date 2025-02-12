@@ -1,7 +1,7 @@
 # 개요
-Windows 환경에서 Logitech G HUB를 사용하여 원래는 사용하지 못하는 마우스 제스처 기능을 구현하는 Lua 스크립트로, MouseGesturesDESKTOP.lua와 MouseGesturesFF14.lua 2개의 스크립트로 구성되어 있음. 각 스크립트는 독립적이며 상호의존하지 아니하므로 원하는 것을 자유롭게 선택하여 사용할 수 있음.
-
-※ https://github.com/mark-vandenberg/g-hub-mouse-gestures 에 기반하여 작성하였음.
+Windows 환경에서 Logitech G HUB를 사용하여 원래는 사용하지 못하는 마우스 제스처 기능을 구현하는 Lua 스크립트로, MX Master 계열 마우스에 기본적으로 제공되는 제스처 기능을 흉내내는 것을 목적으로 함.
+* MouseGesturesDESKTOP.lua와 MouseGesturesFF14.lua 2개의 스크립트로 구성되어 있으며, 각 스크립트는 독립적이며 상호의존하지 아니하므로 원하는 것을 자유롭게 선택하여 사용할 수 있음.
+* https://github.com/mark-vandenberg/g-hub-mouse-gestures 에 기반하여 작성하였음.
 
 ## 설치
 G HUB의 프로파일 관리 화면에서 프로파일 하단의 스크립팅 버튼을 누르고 새로운 스크립트를 등록하여 스크립트 내용을 그대로 전재, 삽입 후 저장. 제스처 버튼으로 지정된 버튼은 G HUB의 버튼 매핑 화면에서 비활성화 처리할 것.
