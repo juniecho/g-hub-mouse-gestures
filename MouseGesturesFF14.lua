@@ -21,7 +21,7 @@ noMovementThreshold = 750
 delay = 20
 
 -- 디버깅 메시지 표시 여부 (콘솔)
-debuggingEnabled = true
+debuggingEnabled = false
 
 
 -- 이벤트 감지
